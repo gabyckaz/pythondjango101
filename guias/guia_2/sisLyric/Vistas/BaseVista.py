@@ -77,7 +77,7 @@ class VistaBase:
                 self.__print(value)
             elif type(value) is funct:
                 value()
-        self.print()
+        self.__print()
 
 if __name__=="__main__":
     
