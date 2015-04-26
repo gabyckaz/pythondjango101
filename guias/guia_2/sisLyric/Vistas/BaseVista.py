@@ -45,8 +45,12 @@ NOTAS:
 """
 
 import sys
+
 if sys.version[0]=='2':
     input = raw_input
+    
+entrada = input
+salir = sys.exit
 
 from types import FunctionType as funct
 
@@ -59,9 +63,10 @@ class VistaBase:
     
     
     def __print(self, __menu=None, __key=None):
+        
         if __menu is None:
             self.__print(self.menu, __key)
-        
+               
         elif __key is None:
             for k in __menu:
                 print("[%d] %s"%(k,__menu[k][0]))
@@ -77,17 +82,19 @@ class VistaBase:
                 self.__print(value)
             elif type(value) is funct:
                 value()
-        self.__print()
+                self.__print()
 
 if __name__=="__main__":
     
+        
     def f1():
         print("REALIZANDO OPERACIONES....")
 
     def s():
         sys.exit()
-        
+    
     class EjemploVista(VistaBase):
+            
         menu = {
             1: ("EJEMPLO 1", {
                     1: ("EJEMPLO SUB MENU 1", f1),

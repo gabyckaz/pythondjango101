@@ -8,17 +8,18 @@ Controladores Artista
 from Modelos import Artista
 
 def get_all_artistas():
-    pass
+        pass
 
 def save_artista(artista):
-    pass
+    if isinstance(artista, Artista):
+        pass
 
 def get_artista_by_id(ida):
-    pass
+        pass
 
 def get_artista_with_similarity(sim):
-    pass
+        pass
 
 def get_artista_by_nombre(nombre):
-    pass
+        pass
     
