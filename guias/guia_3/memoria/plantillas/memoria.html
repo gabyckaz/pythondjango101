@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Juego de memoria</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/cerulean/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Memoria</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Mejores Puntuaciones</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="game">
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        function escogerCarta() {
+            var cartas = ["1","2","3","4","5","6"];
+            var i = Math.floor(Math.random()*cartas.length);
+            return cartas[i];
+        }
+
+        function Carta(nombre) {
+            var carta = {
+                nombre: nombre,
+                caraArriba: false,
+                voltear: function() {
+                    this.caraArriba = !this.caraArriba;
+                }
+            };
+            return carta;
+        }
+
+        function Deck(longitud) {
+            var totalCartas = (longitud * longitud) / 2;
+            var deck = [];
+            for (var i = 0; i <= totalCartas; i++) {
+                var carta = escogerCarta();
+                deck.push(Carta(carta));
+                deck.push(Carta(carta));
+            }
+            return deck;
+        }
+        
+        function popDeck(deck){
+            var i = Math.floor(Math.random()*deck.length);
+            return deck.splice(i, 1)[0];
+        }
+        
+        function Malla(deck, longitud){
+            var malla = [];
+            for(var fila=0; fila<=longitud ; fila++){
+                malla[fila]=[];
+                for( var col=0; col<=longitud; col++){
+                    malla[fila][col]=popDeck(deck);
+                }
+            }
+            return malla;
+        }
+        
+        function Game(longitud){
+            var _deck = Deck(longitud);
+            var _malla = Malla(_deck, longitud);
+            var game = {
+                MENSAJE_ESCOJE: "ESCOJE UNA CARTA",
+                MENSAJE_UNA_MAS: "ESCOJE UNA CARTA MAS",
+                MENSAJE_ERROR: ":/ ERROR",
+                MENSAJE_PAREJA: "PAREJA!",
+                MENSAJE_VICTORIA: "FELICIDADES! GANASTE!",
+                mensaje: "ESCOJE UNA CARTA",
+                deck: _deck,
+                malla: _malla,
+                primera: null,
+                segunda: null,
+                porEncontrar: longitud*longitud,
+                voltearCarta: function(fila, columna){
+                    var carta = deck[fila][columna];
+                    if (carta.caraArriba){
+                        return;
+                    }
+                    carta.voltear();
+                    
+                    if (!this.primera){
+                        this.primera = carta;
+                        this.mensaje = this.MENSAJE_UNA_MAS;
+                        return;
+                    } 
+                    if (!this.segunda){
+                        this.segunda = carta;
+                        if (this.primera.nombre.localeCompare(this.segunda.nombre)==0){
+                            this.mensaje = this.MENSAJE_PAREJA;
+                            this.porEncontrar=this.porEncontrar-2; 
+                        } else{
+                            this.mensaje = this.MENSAJE_ERROR;
+                            this.primera.voltear();
+                            this.segunda.voltear();
+                        }
+                        this.primera = null;
+                        this.segunda = null;
+                        this.mensaje = this.MENSAJE_ESCOJE;
+                    }
+                    if (this.porEncontrar<=0){
+                        this.mensaje = this.MENSAJE_VICTORIA;
+                    }
+                    
+                }
+            };
+            return game;
+        }
+    </script>
+</body>
+
+</html>

@@ -15,12 +15,17 @@ ARCHIVO_PERSISTENCIA = 'db'
 ARCHIVO_PERSISTENCIA_LCK = 'db.lck'
 
 def cargarModelos():
-        pass
+    with open(ARCHIVO_PERSISTENCIA, 'rb') as pd:
+        data = picke.load(pd)
+    return data
+    
 
 MODELOS = {}
 
 def persistirModelos():
-        pass
+    global MODELOS
+    with open(ARCHIVO_PERSISTENCIA, 'wb') as pd:
+        pickle.dump(MODELOS, pd)
 
 def getNextId():
     if len(MODELOS.keys())==0: return 1
@@ -32,23 +37,44 @@ class Modelo:
         
     @classmethod
     def get(cls, sid):
-        pass
+        global MODELOS
+        MODELOS = cargarModelos()
+        return MODELOS[sid]
     
     @classmethod
     def getAll(cls):
-        pass
-        
+        global MODELOS
+        MODELOS = cargarModelos()
+        l = []
+        for mid in MODELOS:
+            ob = MODELOS[mid]
+            if ob.__cname==cls.__name__:
+                l.append(ob)
+        return l
+    
     def getId(self):
         return self.__id
     
     def save(self):
-        pass
+        global MODELOS
+        MODELOS = cargarModelos()
+        self.__id = getNextId()
+        self.__cname = self.__class__.__name__
+        MODELOS[self.__id] = self
+        persistirModelos()
     
     def update(self):
-        pass
+        global MODELOS
+        MODELOS = cargarModelos()
+        MODELOS[self.__id] = self
+        persistirModelos()
     
     def delete(self):
-        pass
+        global MODELOS
+        MODELOS = cargarModelos()
+        del MODELOS[self.__id]
+        persistirModelos()
+        
     
     def __repr__(self):
         return "<class %s id: %s>"%(self.__cname,self.__id)
